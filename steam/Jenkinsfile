@@ -1,0 +1,18 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('Gracze online') {
+            steps {
+                powershell '''
+                    $ErrorActionPreference = 'Stop'
+                    $appid = 730
+                    $url = "https://api.steampowered.com/ISteamUserStats/GetNumberOfCurrentPlayers/v1/?appid=$appid"
+                    $dane = Invoke-RestMethod -Uri $url -UseBasicParsing -TimeoutSec 20
+                    Write-Output "Gra (AppID): $appid"
+                    Write-Output "Aktywni gracze: $($dane.response.player_count)"
+                '''
+            }
+        }
+    }
+}
